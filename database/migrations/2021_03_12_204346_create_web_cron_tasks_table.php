@@ -28,6 +28,6 @@ class CreateWebCronTasksTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('web_cron_tabs');
+        Schema::dropIfExists('web_cron_tasks');
     }
 }
