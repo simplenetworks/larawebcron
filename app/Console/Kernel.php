@@ -7,7 +7,7 @@ use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use App\Models\WebCronTask;
 use App\Models\WebCronResult;
 use Illuminate\Support\Facades\Http;
-use Log;
+use Log, DB;
 
 class Kernel extends ConsoleKernel
 {
@@ -35,10 +35,11 @@ class Kernel extends ConsoleKernel
                 $response = Http::get($task->url);
                 $result = new WebCronResult();
                 $result->code = $response->status();
-                $result->body = $response->body();
+                $result->body = utf8_encode($response->body());
                 $result->web_cron_task_id = $task->id;
                 $result->duration = time() - $start;
-                $result->save();       
+                $result->save();
+                       
             })->cron($task->schedule);
         }
         
