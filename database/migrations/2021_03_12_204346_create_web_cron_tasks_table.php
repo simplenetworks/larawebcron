@@ -17,6 +17,9 @@ class CreateWebCronTasksTable extends Migration
             $table->id();
             $table->string('url');
             $table->string('schedule');
+            $table->smallInteger('timeout')->default(60);
+            $table->smallInteger('attempts')->default(1);
+            $table->integer('retry_waits')->default(5000);
             $table->timestamps();
         });
     }

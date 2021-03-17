@@ -32,7 +32,7 @@ class Kernel extends ConsoleKernel
         foreach($tasks as $task) {
             $schedule->call(function() use ($task) {
                 $start = time();
-                $response = Http::get($task->url);
+                $response = Http::timeout($task->timeout)->retry($task->attempts, $task->retry_waits)->get($task->url);
                 $result = new WebCronResult();
                 $result->code = $response->status();
                 $result->body = utf8_encode($response->body());
