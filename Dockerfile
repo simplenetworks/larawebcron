@@ -55,4 +55,4 @@ RUN crontab /etc/cron.d/larawebcron
 RUN chown -R www-data:www-data /var/www
 
 
-CMD service cron start; service nginx start; php-fpm
+CMD printenv > /etc/environment && service cron start; service nginx start; php-fpm
