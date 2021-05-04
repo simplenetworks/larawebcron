@@ -19,21 +19,10 @@ class AddFieldsWebCronTaskTable extends Migration
             $table->string('site')->nullable();
             $table->string('email')->nullable();
             $table->smallInteger('log_type')->default(0);
-            $table->smallInteger('status')->default(0);
+            $table->smallInteger('status')->default(1);
             $table->boolean('enabled')->default(0);
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
-
-
-
-            // $table->string('name')->after('id');
-            // $table->string('site')->after('name');
-            // $table->string('email');
-            // $table->smallInteger('log_type')->after('email')->default(0);
-            // $table->smallInteger('status')->default(0);
-            // $table->boolean('enabled')->after('enabled')->default(0);
-            // $table->date('start_date')->after('enabled');
-            // $table->date('end_date')->after('start_date');
 
             //category
             // max_runs

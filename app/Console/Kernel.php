@@ -28,7 +28,18 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $tasks = WebCronTask::get();
+        //$tasks = WebCronTask::get();
+
+        $current_day = Date('Y-m-d');
+        $tasks = WebCronTask::where('enabled', TRUE)
+                            ->where('start_date', '<=', $current_day)
+                            ->where('end_date', '>=', $current_day)
+                            ->where(function($query) {
+                                $query->whereRaw('max_runs > (SELECT count(id) FROM web_cron_results where web_cron_task_id= web_cron_tasks.id) ')
+                                ->orWhere('max_runs', '=', 0); //unlimited runs
+                            })
+                            ->get();
+
         foreach($tasks as $task) {
             $schedule->call(function() use ($task) {
                 $start = time();
@@ -39,10 +50,13 @@ class Kernel extends ConsoleKernel
                 $result->web_cron_task_id = $task->id;
                 $result->duration = time() - $start;
                 $result->save();
-                       
-            })->cron($task->schedule);
+
+                // set status for current task.
+                setTaskStatus($task->id);
+
+           })->cron($task->schedule);
         }
-        
+
     }
 
     /**
