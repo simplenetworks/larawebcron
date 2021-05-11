@@ -9,7 +9,7 @@ use App\Models\WebCronResult;
 use Illuminate\Support\Facades\Http;
 use DB;
 use Illuminate\Support\Facades\Log;
-use App\LaraWebCronFunctions;
+//use App\LaraWebCronFunctions;
 
 class Kernel extends ConsoleKernel
 {
@@ -51,7 +51,6 @@ class Kernel extends ConsoleKernel
                 echo $logMessage.PHP_EOL;
 
                 $start = time();
-                //$response = Http::timeout($task->timeout)->retry($task->attempts, $task->retry_waits)->get($task->url);
                 $result = new WebCronResult();
 
                 try {
@@ -82,24 +81,11 @@ class Kernel extends ConsoleKernel
                 // send email with current task result
                 $result->emailTaskResults($task->log_type);
 
-                // // send email with details of current task result with tasks.log_type logic
-                // switch ($task->log_type) {
-                //     case 0: //never
-                //         break;
-
-                //     case 1: // with error
-                //         if ($result->code < 300) break;
-
-                //     default: // always (log_type 2)
-                //         LaraWebCronFunctions::sendResultEmailById($result->id);
-                //         break;
-                //}
-
            })->cron($task->schedule);
+
         }
 
     }
-
 
     /**
      * Register the commands for the application.
