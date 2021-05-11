@@ -7,10 +7,13 @@ use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use App\Models\WebCronTask;
 use App\Models\WebCronResult;
 use Illuminate\Support\Facades\Http;
-use Log, DB;
+use DB;
+use Illuminate\Support\Facades\Log;
+use App\LaraWebCronFunctions;
 
 class Kernel extends ConsoleKernel
 {
+
     /**
      * The Artisan commands provided by your application.
      *
@@ -31,6 +34,7 @@ class Kernel extends ConsoleKernel
         //$tasks = WebCronTask::get();
 
         $current_day = Date('Y-m-d');
+
         $tasks = WebCronTask::where('enabled', TRUE)
                             ->where('start_date', '<=', $current_day)
                             ->where('end_date', '>=', $current_day)
@@ -41,23 +45,61 @@ class Kernel extends ConsoleKernel
                             ->get();
 
         foreach($tasks as $task) {
+
             $schedule->call(function() use ($task) {
+                $logMessage = "Executed task name: '" .$task->name ."' (ID: " .$task->id .")";
+                echo $logMessage.PHP_EOL;
+
                 $start = time();
-                $response = Http::timeout($task->timeout)->retry($task->attempts, $task->retry_waits)->get($task->url);
+                //$response = Http::timeout($task->timeout)->retry($task->attempts, $task->retry_waits)->get($task->url);
                 $result = new WebCronResult();
-                $result->code = $response->status();
-                $result->body = utf8_encode($response->body());
+
+                try {
+
+                    $response = Http::timeout($task->timeout)->retry($task->attempts, $task->retry_waits)->get($task->url);
+
+                    $result->body = utf8_encode($response->body());
+                    $result->code = $response->status();
+
+                } catch (\Exception $e)
+                {
+
+                    $result->body = utf8_encode('Caught exception: ' .$e->getMessage());
+                    $result->code = 500; //$response->status();
+
+                    Log::alert($logMessage);
+                    Log::alert($e->getMessage());
+
+                }
+
                 $result->web_cron_task_id = $task->id;
                 $result->duration = time() - $start;
                 $result->save();
 
-                // set status for current task.
-                setTaskStatus($task->id);
+                // set status for current task
+                $task->refreshTaskStatus();
+
+                // send email with current task result
+                $result->emailTaskResults($task->log_type);
+
+                // // send email with details of current task result with tasks.log_type logic
+                // switch ($task->log_type) {
+                //     case 0: //never
+                //         break;
+
+                //     case 1: // with error
+                //         if ($result->code < 300) break;
+
+                //     default: // always (log_type 2)
+                //         LaraWebCronFunctions::sendResultEmailById($result->id);
+                //         break;
+                //}
 
            })->cron($task->schedule);
         }
 
     }
+
 
     /**
      * Register the commands for the application.
@@ -71,3 +113,4 @@ class Kernel extends ConsoleKernel
         require base_path('routes/console.php');
     }
 }
+
