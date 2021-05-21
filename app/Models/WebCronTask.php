@@ -9,6 +9,21 @@ class WebCronTask extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'url',
+        'schedule',
+        'timeout',
+        'attempts',
+        'retry_waits',
+        'name',
+        'site',
+        'email',
+        'log_type',
+        'enabled',
+        'start_date',
+        'end_date'
+    ];
+
     public function webCronResults() {
         return $this->hasMany('App\Models\WebCronResult');
     }

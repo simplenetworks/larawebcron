@@ -7,6 +7,11 @@ use Illuminate\Http\Request;
 use App\Models\WebCronResult;
 use Illuminate\Support\Facades\Validator;
 
+use Illuminate\Support\Facades\Gate;
+use Symfony\Component\HttpFoundation\Response;
+
+use App\LaraWebCronFunctions;
+
 class WebCronResultController extends Controller
 {
     // Route::get('/results', 'App\Http\Controllers\WebCronResultController@getResults');
@@ -88,7 +93,7 @@ class WebCronResultController extends Controller
     // Route::patch('/results/{id}', 'App\Http\Controllers\WebCronResultController@partialUpdateResult');
     public function partialUpdateResult(Request $request, $id) {
         $webCronResult = WebCronResult::findOrFail($id);
-        
+
         $validator = Validator::make($request->all(),[
             'code' => 'sometimes|required|integer',
             'duration' => 'sometimes|required|integer',
@@ -105,15 +110,15 @@ class WebCronResultController extends Controller
         if($request->has('code')) {
             $webCronResult->code = $request->input('code');
         }
-        
+
         if($request->has('duration')) {
             $webCronResult->duration = $request->input('duration');
         }
-        
+
         if($request->has('body')) {
             $webCronResult->body = $request->input('body');
         }
-        
+
         if($request->has('web_cron_task_id')) {
             $webCronResult->web_cron_task_id = $request->input('web_cron_task_id');
         }
@@ -124,5 +129,70 @@ class WebCronResultController extends Controller
 
     }
 
+ // gui controllers
+
+ public function index()
+ {
+    abort_if(Gate::denies('task_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+    $webcronresults = WebCronResult::orderBy('id','desc')->paginate(10);
+
+    return view('webcronresults.index', compact('webcronresults'))
+        ->with('i', (request()->input('page', 1) - 1) * 10);
+ }
+
+//  public function create()
+//  {
+//      abort_if(Gate::denies('task_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+//      return view('webcronresults.create');
+//  }
+
+//  public function store(StoreWebCronResultRequest $request)
+//  {
+//      WebCronResult::create($request->validated());
+
+//      return redirect()->route('webcronresults.index');
+//  }
+
+ public function show(WebCronResult $webcronresult)
+ {
+    abort_if(Gate::denies('task_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+    return view('webcronresults.show', compact('webcronresult'));
+ }
+
+//  public function edit(WebCronResult $webcronresult)
+//  {
+//      abort_if(Gate::denies('task_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+//      return view('webcronresults.edit', compact('webcronresult'));
+//  }
+
+//  public function update(UpdateWebCronResultRequest $request, WebCronResult $webcronresult)
+//  {
+//      $webcronresult->update($request->validated());
+
+//      return redirect()->route('webcronresults.index');
+//  }
+
+ public function destroy(WebCronResult $webcronresult)
+ {
+    abort_if(Gate::denies('task_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+    $webcronresult->delete();
+
+    return redirect()->route('webcrontasks.show',$webcronresult->web_cron_task_id);
+
+ }
+
+ public function sendResultEmailById(WebCronResult $webcronresult)
+ {
+    abort_if(Gate::denies('task_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+    LaraWebCronFunctions::sendResultEmailById($webcronresult->id);
+
+    return redirect()->route('webcrontasks.show',$webcronresult->web_cron_task_id);
+ }
 
 }
