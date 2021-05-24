@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Kyslik\ColumnSortable\Sortable;
 
 class WebCronTask extends Model
 {
-    use HasFactory;
+    use HasFactory, Sortable;
 
     protected $fillable = [
         'url',
@@ -23,6 +24,16 @@ class WebCronTask extends Model
         'start_date',
         'end_date'
     ];
+
+
+    public $sortable = [
+        'id',
+        'status',
+        'schedule',
+        'name',
+        'enabled'
+    ];
+
 
     public function webCronResults() {
         return $this->hasMany('App\Models\WebCronResult');

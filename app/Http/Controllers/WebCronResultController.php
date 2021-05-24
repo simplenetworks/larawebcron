@@ -135,7 +135,9 @@ class WebCronResultController extends Controller
  {
     abort_if(Gate::denies('task_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-    $webcronresults = WebCronResult::orderBy('id','desc')->paginate(10);
+    // $webcronresults = WebCronResult::orderBy('id','desc')->paginate(10);
+    $webcronresults = WebCronResult::sortable()->paginate(10);
+
 
     return view('webcronresults.index', compact('webcronresults'))
         ->with('i', (request()->input('page', 1) - 1) * 10);

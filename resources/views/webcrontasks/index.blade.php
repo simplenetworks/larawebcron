@@ -23,19 +23,19 @@
                                 <thead class="bg-gray-50">
                                 <tr>
                                     <th scope="col" width="50" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        ID
+                                        @sortablelink('id')
                                     </th>
                                     <th scope="col" width="50" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Status
+                                        @sortablelink('status')
                                     </th>
                                     <th scope="col" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Name
+                                        @sortablelink('name')
                                     </th>
                                     <th scope="col" width="100" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Enabled
+                                        @sortablelink('enabled')
                                     </th>
                                     <th scope="col" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Schedule
+                                        @sortablelink('schedule')
                                     </th>
                                     <th scope="col" width="200" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
 
@@ -146,7 +146,8 @@
                                 </tbody>
                             </table>
                             <div class="flex-1 flex ml-2 mr-2 mt-2 mb-2">
-                                {{ $webcrontasks->links() }}
+                                {!! $webcrontasks->appends(\Request::except('page'))->render() !!}
+                                {{-- {{ $webcrontasks->links() }} --}}
                             </div>
                         </div>
                     </div>

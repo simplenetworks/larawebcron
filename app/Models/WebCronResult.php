@@ -5,10 +5,29 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\LaraWebCronFunctions;
+use Kyslik\ColumnSortable\Sortable;
 
 class WebCronResult extends Model
 {
-    use HasFactory;
+    use HasFactory, Sortable;
+
+    protected $fillable = [
+        'code',
+        'duration',
+        'body',
+        'web_cron_task_id',
+        'created_at',
+        'updated_at'
+    ];
+
+    public $sortable = [
+        'id',
+        'status',
+        'code',
+        'name',
+        'duration',
+        'executed_at'
+    ];
 
     public function webCronTask() {
         return $this->belongsTo('App\Models\WebCronTask');

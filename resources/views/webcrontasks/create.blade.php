@@ -69,6 +69,7 @@
                             @enderror
 
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-8 mt-5 mx-7">
+                            {{-- <div class="md:grid md:grid-cols-3 md:gap-6"> --}}
                                 <div class="grid grid-cols-1">
                                     <label for="timeout" class="block font-medium text-sm text-gray-700">Timeout (in seconds)</label>
                                     <input placeholder="60" type="text" name="timeout" id="timeout" type="text" class="form-input rounded-md shadow-sm mt-1 block w-full"

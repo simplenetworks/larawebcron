@@ -19,19 +19,22 @@
                                 <thead class="bg-gray-50">
                                 <tr>
                                     <th scope="col" width="50" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        ID
+                                        @sortablelink('id')
                                     </th>
                                     <th scope="col" width="50" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Status
+                                        @sortablelink('code','status')
+                                    </th>
+                                    <th scope="col" width="50" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        @sortablelink('code')
                                     </th>
                                     <th scope="col" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Name
+                                        name
                                     </th>
                                     <th scope="col" width="100" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Duration
+                                        @sortablelink('duration')
                                     </th>
                                     <th scope="col" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Executed at
+                                        @sortablelink('updated_at','Executed at')
                                     </th>
                                     <th scope="col" width="200" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
 
@@ -62,6 +65,9 @@
                                         @php
                                           $webcrontask = $webcronresult->webcrontask()->first();
                                         @endphp
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm text-gray-900">{{ $webcronresult->code }}</div>
+                                        </td>
 
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <div class="text-sm text-gray-900">{{ $webcrontask->name }}</div>
@@ -117,7 +123,8 @@
                                 </tbody>
                             </table>
                             <div class="flex-1 flex ml-2 mr-2 mt-2 mb-2">
-                                {{ $webcronresults->links() }}
+                                {!! $webcronresults->appends(\Request::except('page'))->render() !!}
+                                {{-- {{ $webcronresults->links() }} --}}
                             </div>
                         </div>
                     </div>
