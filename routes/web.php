@@ -25,7 +25,7 @@ Route::group(['middleware' => 'auth'], function () {
     // Route::resource('tasks', \App\Http\Controllers\TasksController::class);
 
     Route::patch('webcrontasks/changetaskenabled/{webcrontask}', 'App\Http\Controllers\WebCronTaskController@changeTaskEnabled')->name('webcrontasks.changetaskenabled');
-    //Route::patch('webcrontasks/duplicatetask/{webcrontask}', 'App\Http\Controllers\WebCronTaskController@duplicateTask')->name('webcrontasks.duplicatetask');
+    Route::patch('webcrontasks/duplicatetask/{webcrontask}', 'App\Http\Controllers\WebCronTaskController@duplicateTask')->name('webcrontasks.duplicatetask');
 
     Route::resource('webcrontasks', \App\Http\Controllers\WebCronTaskController::class);
 

@@ -127,6 +127,19 @@
                                                     </a>
                                                 </div>
                                                 <div class="w-4 mr-2 transform hover:text-purple-500 hover:scale-110">
+                                                    <form class="inline-block" action="{{ route('webcrontasks.duplicatetask', $webcrontask) }}" method="POST">
+                                                        <input type="hidden" name="_method" value="PATCH">
+                                                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                                        <button class="text-red-600 hover:text-red-900 mb-2 mr-2">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-double-right" viewBox="0 0 16 16">
+                                                                <title>Duplicate task {{ $webcrontask->name }}</title>
+                                                                <path fill-rule="evenodd" d="M3.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L9.293 8 3.646 2.354a.5.5 0 0 1 0-.708z"/>
+                                                                <path fill-rule="evenodd" d="M7.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L13.293 8 7.646 2.354a.5.5 0 0 1 0-.708z"/>
+                                                            </svg>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                                <div class="w-4 mr-2 transform hover:text-purple-500 hover:scale-110">
                                                     <form class="inline-block" action="{{ route('webcrontasks.destroy', $webcrontask) }}" method="POST" onsubmit="return confirm('Are you sure?');">
                                                         <input type="hidden" name="_method" value="DELETE">
                                                         <input type="hidden" name="_token" value="{{ csrf_token() }}">

@@ -12,7 +12,15 @@
     <div class="max-w-6xl mx-auto py-10 sm:px-6 lg:px-8">
         <div class="block mb-8">
             <a href="{{ route('webcrontasks.index') }}" class="bg-gray-200 hover:bg-gray-300 text-black font-bold py-2 px-4 rounded">Back to list</a>
+            <form class="inline-block" action="{{ route('webcrontasks.duplicatetask', $webcrontask) }}" method="POST">
+                <input type="hidden" name="_method" value="PATCH">
+                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                <button class="bg-gray-200 hover:bg-gray-300 text-black font-bold py-2 px-4 rounded">
+                    Duplicate task
+                </button>
+            </form>
         </div>
+
         <div class="flex flex-col bg-white">
 
             <div class="md:grid md:grid-cols-2 hover:bg-gray-50 md:space-y-0 space-y-1 p-4 border-b">

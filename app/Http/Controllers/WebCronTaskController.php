@@ -299,9 +299,10 @@ class WebCronTaskController extends Controller
         $webCronTaskNew = new WebCronTask();
         $webCronTaskNew = $webcrontask->replicate();
         $webCronTaskNew->enabled = 0;
+        $webCronTaskNew->status = 1;
         $webCronTaskNew->save();
 
-        return redirect()->route('webcrontasks.index');
+        return redirect()->route('webcrontasks.edit',$webCronTaskNew->id);
 
     }
 
