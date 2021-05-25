@@ -100,7 +100,7 @@ return [
     /*
     default direction for: $user->sortable('id') usage
      */
-    'default_direction'             => 'asc',
+    'default_direction'             => 'desc',
 
     /*
     default direction for non-sorted columns

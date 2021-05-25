@@ -227,7 +227,7 @@ class WebCronTaskController extends Controller
         abort_if(Gate::denies('task_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         //$webcrontasks = WebCronTask::orderBy('id','desc')->sortable()->paginate(10);
-        $webcrontasks = WebCronTask::sortable()->paginate(10);
+        $webcrontasks = WebCronTask::sortable('id')->paginate(10);
 
         return view('webcrontasks.index', compact('webcrontasks'))
             ->with('i', (request()->input('page', 1) - 1) * 10);

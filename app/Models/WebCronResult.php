@@ -26,7 +26,7 @@ class WebCronResult extends Model
         'code',
         'name',
         'duration',
-        'executed_at'
+        'updated_at'
     ];
 
     public function webCronTask() {
