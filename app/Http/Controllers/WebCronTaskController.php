@@ -12,6 +12,7 @@ use App\Http\Requests\UpdateWebCronTaskRequest;
 use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response;
 use App\Models\WebCronResult;
+use \Illuminate\Support\Str;
 
 const REGEX_CRON = "/(@(annually|yearly|monthly|weekly|daily|hourly|reboot))|(@every (\d+(ns|us|µs|ms|s|m|h))+)|(\*|(?:[0-9]|(?:[1-5][0-9]))(?:(?:\-[0-9]|\-(?:[1-5][0-9]))?|(?:\,(?:[0-9]|(?:[1-5][0-9])))*)) (\*|(?:[0-9]|1[0-9]|2[0-3])(?:(?:\-(?:[0-9]|1[0-9]|2[0-3]))?|(?:\,(?:[0-9]|1[0-9]|2[0-3]))*)) (\*|(?:[1-9]|(?:[12][0-9])|3[01])(?:(?:\-(?:[1-9]|(?:[12][0-9])|3[01]))?|(?:\,(?:[1-9]|(?:[12][0-9])|3[01]))*)) (\*|(?:[1-9]|1[012]|JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)(?:(?:\-(?:[1-9]|1[012]|JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC))?|(?:\,(?:[1-9]|1[012]|JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC))*)) (\*|(?:[0-6]|SUN|MON|TUE|WED|THU|FRI|SAT)(?:(?:\-(?:[0-6]|SUN|MON|TUE|WED|THU|FRI|SAT))?|(?:\,(?:[0-6]|SUN|MON|TUE|WED|THU|FRI|SAT))*))$/";
 //const REGEX_EMAIL = "/^\S+@\S+\.\S+$/";
@@ -233,6 +234,44 @@ class WebCronTaskController extends Controller
             ->with('i', (request()->input('page', 1) - 1) * 10);
     }
 
+    public function search(Request $request)
+    {
+        abort_if(Gate::denies('task_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+        $string = Str::of($request->input('query'))->trim();
+
+        $stringLen = Str::of($string)->length();
+
+        if ($stringLen>0){
+
+            $site = WebCronTask::where('site', 'like', '%' .$string .'%');
+            $url = WebCronTask::where('url',  'like', '%' .$string .'%');
+            $id = WebCronTask::where('id',  'like', '%' .$string .'%');
+            $email = WebCronTask::where('email',  'like', '%' .$string .'%');
+            $schedule = WebCronTask::where('schedule',  'like', '%' .$string .'%');
+            $startDate = WebCronTask::where('start_date',  'like', '%' .$string .'%');
+            $endDate = WebCronTask::where('end_date',  'like', '%' .$string .'%');
+
+            $webcrontasks = WebCronTask::where('name', 'like', '%' .$string .'%')
+                                            ->union($site)
+                                            ->union($id)
+                                            ->union($url)
+                                            ->union($email)
+                                            ->union($schedule)
+                                            ->union($startDate)
+                                            ->union($endDate)
+                                            ->paginate(10);
+
+        } else {
+
+            $webcrontasks = WebCronTask::sortable('id')->paginate(10);
+
+        };
+
+        return view('webcrontasks.index', compact('webcrontasks'))
+            ->with('i', (request()->input('page', 1) - 1) * 10);
+    }
+
     public function create()
     {
         abort_if(Gate::denies('task_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
@@ -298,10 +337,14 @@ class WebCronTaskController extends Controller
 
         $webCronTaskNew = new WebCronTask();
         $webCronTaskNew = $webcrontask->replicate();
+
+        // set default status and NOT enabled
         $webCronTaskNew->enabled = 0;
         $webCronTaskNew->status = 1;
+
         $webCronTaskNew->save();
 
+        // redirect to edit page for enable task
         return redirect()->route('webcrontasks.edit',$webCronTaskNew->id);
 
     }

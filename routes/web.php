@@ -26,10 +26,13 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::patch('webcrontasks/changetaskenabled/{webcrontask}', 'App\Http\Controllers\WebCronTaskController@changeTaskEnabled')->name('webcrontasks.changetaskenabled');
     Route::patch('webcrontasks/duplicatetask/{webcrontask}', 'App\Http\Controllers\WebCronTaskController@duplicateTask')->name('webcrontasks.duplicatetask');
+    Route::get('webcrontasks/search', 'App\Http\Controllers\WebCronTaskController@search')->name('webcrontasks.search');
 
     Route::resource('webcrontasks', \App\Http\Controllers\WebCronTaskController::class);
 
     Route::get('webcronresults/sendresultemailbyid/{webcronresult}', 'App\Http\Controllers\WebCronResultController@sendResultEmailById')->name('webcronresults.sendresultemailbyid');
+    Route::get('webcronresults/search', 'App\Http\Controllers\WebCronResultController@search')->name('webcronresults.search');
+
     Route::resource('webcronresults', \App\Http\Controllers\WebCronResultController::class);
 
     Route::resource('users', \App\Http\Controllers\UsersController::class);

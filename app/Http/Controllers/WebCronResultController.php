@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response;
 
 use App\LaraWebCronFunctions;
+use \Illuminate\Support\Str;
 
 class WebCronResultController extends Controller
 {
@@ -135,7 +136,6 @@ class WebCronResultController extends Controller
  {
     abort_if(Gate::denies('task_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-    // $webcronresults = WebCronResult::orderBy('id','desc')->paginate(10);
     $webcronresults = WebCronResult::sortable('id')->paginate(10);
 
 
@@ -143,19 +143,37 @@ class WebCronResultController extends Controller
         ->with('i', (request()->input('page', 1) - 1) * 10);
  }
 
-//  public function create()
-//  {
-//      abort_if(Gate::denies('task_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+public function search(Request $request)
+{
+    abort_if(Gate::denies('task_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-//      return view('webcronresults.create');
-//  }
+    $string = Str::of($request->input('query'))->trim();
 
-//  public function store(StoreWebCronResultRequest $request)
-//  {
-//      WebCronResult::create($request->validated());
+    $stringLen = Str::of($string)->length();
 
-//      return redirect()->route('webcronresults.index');
-//  }
+    if ($stringLen>0){
+
+        $body = WebCronResult::where('body',  'like', '%' .$string .'%');
+        $id = WebCronResult::where('id',  'like', '%' .$string .'%');
+        $createdAt = WebCronResult::where('created_at',  'like', '%' .$string .'%');
+        $updatedAt = WebCronResult::where('updated_at',  'like', '%' .$string .'%');
+
+        $webcronresults = WebCronResult::where('code', 'like', '%' .$string .'%')
+                                        ->union($body)
+                                        ->union($id)
+                                        ->union($createdAt)
+                                        ->union($updatedAt)
+                                        ->paginate(10);
+
+    } else {
+
+        $webcronresults = WebCronResult::sortable('id')->paginate(10);
+
+    };
+
+    return view('webcronresults.index', compact('webcronresults'))
+        ->with('i', (request()->input('page', 1) - 1) * 10);
+}
 
  public function show(WebCronResult $webcronresult)
  {
@@ -163,20 +181,6 @@ class WebCronResultController extends Controller
 
     return view('webcronresults.show', compact('webcronresult'));
  }
-
-//  public function edit(WebCronResult $webcronresult)
-//  {
-//      abort_if(Gate::denies('task_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
-//      return view('webcronresults.edit', compact('webcronresult'));
-//  }
-
-//  public function update(UpdateWebCronResultRequest $request, WebCronResult $webcronresult)
-//  {
-//      $webcronresult->update($request->validated());
-
-//      return redirect()->route('webcronresults.index');
-//  }
 
  public function destroy(WebCronResult $webcronresult)
  {

@@ -12,8 +12,25 @@
 
     <div>
         <div class="max-w-6xl mx-auto py-10 sm:px-6 lg:px-8">
+
+
+
             <div class="block mb-8">
-                <a href="{{ route('webcrontasks.create') }}" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Add Task</a>
+
+                <div class="grid grid-cols-2 md:grid-cols-2 gap-5 md:gap-8 mt-5 mx-7">
+                    <div >
+                         <a href="{{ route('webcrontasks.create') }}" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Add Task</a>
+                    </div>
+                    <div>
+                        <form action="{{ route('webcrontasks.search') }}" method="GET">
+                            @csrf
+                            <input type="text" name="query" class="form-control" />
+                            <input type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" value="Search" style="margin-top: 10px;" />
+                        </form>
+                    </div>
+
+                </div>
+
             </div>
             <div class="flex flex-col">
                 <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
