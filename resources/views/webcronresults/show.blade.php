@@ -1,6 +1,7 @@
 @php
     //use Lorisleiva\CronTranslator\CronTranslator;
     use App\LaraWebCronFunctions;
+    use Illuminate\Support\Str;
 @endphp
 
 <x-app-layout>
@@ -62,6 +63,24 @@
                             @endif
 
                             <div class="w-4 mr-2 ml-4 transform hover:text-purple-500 hover:scale-110">
+                                <a href="{{ route('webcronresults.showbodyresult', $webcronresult) }}" target="_blank" class="text-blue-600 hover:text-blue-900 mb-2 mr-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-chevron-bar-expand" viewBox="0 0 16 16">
+                                        <title>Expand body result</title>
+                                        <path fill-rule="evenodd" d="M3.646 10.146a.5.5 0 0 1 .708 0L8 13.793l3.646-3.647a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 0-.708zm0-4.292a.5.5 0 0 0 .708 0L8 2.207l3.646 3.647a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 0 0 0 .708zM1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8z"/>
+                                    </svg>
+                                </a>
+                            </div>
+                            <div class="w-4 mr-2 ml-4 transform hover:text-purple-500 hover:scale-110">
+                                <a href="{{ route('webcrontasks.show', $webcronresult->web_cron_task_id) }}" class="text-blue-600 hover:text-blue-900 mb-2 mr-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-list-task" viewBox="0 0 16 16">
+                                        <title>Show task {{ $webcronresult->id }}</title>
+                                        <path fill-rule="evenodd" d="M2 2.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5V3a.5.5 0 0 0-.5-.5H2zM3 3H2v1h1V3z"/>
+                                        <path d="M5 3.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zM5.5 7a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1h-9zm0 4a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1h-9z"/>
+                                        <path fill-rule="evenodd" d="M1.5 7a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5H2a.5.5 0 0 1-.5-.5V7zM2 7h1v1H2V7zm0 3.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5H2zm1 .5H2v1h1v-1z"/>
+                                    </svg>
+                                </a>
+                            </div>
+                            <div class="w-4 mr-2 ml-4 transform hover:text-purple-500 hover:scale-110">
                                 <form class="inline-block" action="{{ route('webcronresults.destroy', $webcronresult) }}" method="POST" onsubmit="return confirm('Are you sure?');">
                                     <input type="hidden" name="_method" value="DELETE">
                                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
@@ -79,132 +98,39 @@
                 </div>
             </div>
             <div>
-                <div class="md:grid md:grid-cols-2 hover:bg-gray-50 md:space-y-0 space-y-1 p-4 border-b">
-                    <p class="text-gray-600">
-                        Return code
-                    </p>
-                    <p>
-                        {{$webcronresult->code}}
-                    </p>
-                </div>
-                <div class="md:grid md:grid-cols-2 hover:bg-gray-50 md:space-y-0 space-y-1 p-4 border-b">
-                    <p class="text-gray-600">
-                        Executed at
-                    </p>
-                    <p>
-                        {{ $webcronresult->updated_at->toDateTimeString() }}
-                    </p>
-                </div>
-                <div class="md:grid md:grid-cols-2 hover:bg-gray-50 md:space-y-0 space-y-1 p-4 border-b">
-                    <p class="text-gray-600">
-                        Duration seconds
-                    </p>
-                    <p>
-                        {{$webcronresult->duration}}
-                    </p>
-                </div>
-                <div class="md:grid md:grid-cols-2 hover:bg-gray-50 md:space-y-0 space-y-1 p-4 border-b">
-                    <p class="text-gray-600">
-                        Body of return
-                    </p>
-                    <p>
-                        {{$webcronresult->body}}
-                    </p>
-                </div>
-                {{-- <div class="md:grid md:grid-cols-2 hover:bg-gray-50 md:space-y-0 space-y-1 p-4 border-b">
-                    <p class="text-gray-600">
-                        Attempts
-                    </p>
-                    <p>
-                        {{$webcronresult->attempts}}
-                    </p>
-                </div>
-                <div class="md:grid md:grid-cols-2 hover:bg-gray-50 md:space-y-0 space-y-1 p-4 border-b">
-                    <p class="text-gray-600">
-                        Retry waits
-                    </p>
-                    <p>
-                        {{$webcronresult->retry_waits}}
-                    </p>
-                </div>
-                <div class="md:grid md:grid-cols-2 hover:bg-gray-50 md:space-y-0 space-y-1 p-4 border-b">
-                    <p class="text-gray-600">
-                        Email Address
-                    </p>
-                    <p>
-                        {{$webcronresult->email}}
-                    </p>
-                </div>
-                <div class="md:grid md:grid-cols-2 hover:bg-gray-50 md:space-y-0 space-y-1 p-4 border-b">
-                    <p class="text-gray-600">
-                        Log type
-                    </p>
-                    <p>
-                        @switch($webcronresult->log_type)
-                            @case(0)
-                                Never
-                                @break
-                            @case(1)
-                                Only with error
-                                @break
-                            @case(2)
-                                Always
-                                @break
-                            @default
-                                Not defined
-                        @endswitch
-                    </p>
-                </div>
-                <div class="md:grid md:grid-cols-2 hover:bg-gray-50 md:space-y-0 space-y-1 p-4 border-b">
-                    <p class="text-gray-600">
-                        Max runs
-                    </p>
-                    <p>
-                        {{$webcronresult->max_runs}}
-                    </p>
-                </div>
-                <div class="md:grid md:grid-cols-2 hover:bg-gray-50 md:space-y-0 space-y-1 p-4 border-b">
-                    <p class="text-gray-600">
-                        Start date
-                    </p>
-                    <p>
-                        {{$webcronresult->start_date}}
-                    </p>
-                </div>
-                <div class="md:grid md:grid-cols-2 hover:bg-gray-50 md:space-y-0 space-y-1 p-4 border-b">
-                    <p class="text-gray-600">
-                        End date
-                    </p>
-                    <p>
-                        {{$webcronresult->end_date}}
-                    </p>
-                </div>
-                <div class="md:grid md:grid-cols-2 hover:bg-gray-50 md:space-y-0 space-y-1 p-4 border-b">
-                    <p class="text-gray-600">
-                        Id
-                    </p>
-                    <p>
-                        {{$webcronresult->id}}
-                    </p>
-                </div>
-                <div class="md:grid md:grid-cols-2 hover:bg-gray-50 md:space-y-0 space-y-1 p-4 border-b">
-                    <p class="text-gray-600">
-                        Creation date/time
-                    </p>
-                    <p>
-                        {{$webcronresult->created_at}}
-                    </p>
-                </div>
-                <div class="md:grid md:grid-cols-2 hover:bg-gray-50 md:space-y-0 space-y-1 p-4 border-b">
-                    <p class="text-gray-600">
-                        Updated date/time
-                    </p>
-                    <p>
-                        {{$webcronresult->updated_at}}
-                    </p>
-                </div>
+            <div class="md:grid md:grid-cols-2 hover:bg-gray-50 md:space-y-0 space-y-1 p-4 border-b">
+                <p class="text-gray-600">
+                    Return code
+                </p>
+                <p>
+                    {{$webcronresult->code}}
+                </p>
             </div>
-        </div>
-    </div> --}}
-
+            <div class="md:grid md:grid-cols-2 hover:bg-gray-50 md:space-y-0 space-y-1 p-4 border-b">
+                <p class="text-gray-600">
+                    Executed at
+                </p>
+                <p>
+                    {{ $webcronresult->updated_at->toDateTimeString() }}
+                </p>
+            </div>
+            <div class="md:grid md:grid-cols-2 hover:bg-gray-50 md:space-y-0 space-y-1 p-4 border-b">
+                <p class="text-gray-600">
+                    Duration seconds
+                </p>
+                <p>
+                    {{$webcronresult->duration}}
+                </p>
+            </div>
+            <div class="md:grid md:grid-cols-2 hover:bg-gray-50 md:space-y-0 space-y-1 p-4 border-b">
+                <p class="text-gray-600">
+                    Body of return
+                </p>
+                <p>
+                    {{Str::substr($webcronresult->body, 0, config('larawebcron.body_number_of_char'))}}
+                    @if (Str::of($webcronresult->body)->length()>config('larawebcron.body_number_of_char'))
+                        <a href="{{ route('webcronresults.showbodyresult', $webcronresult) }}" target="_blank">...</a>
+                    @endif
+                </p>
+            </div>
 </x-app-layout>

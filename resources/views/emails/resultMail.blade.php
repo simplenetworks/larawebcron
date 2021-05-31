@@ -1,45 +1,8 @@
-{{-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>LaraWebCron Result</title><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
-</head>
-<body>
-LaraWebCron detail for:
-<div>
-<p><b>task name:</b>&nbsp;{{ $emailData->name }},</p>
-<p><b>result ID:</b>&nbsp;{{ $emailData->id }},</p>
-<p><b>date/time of execution:</b>&nbsp;{{ $emailData->updated_at }},</p>
-<p><b>duration:</b>&nbsp;{{ $emailData->duration }},</p>
-<p><b>return code:</b>&nbsp;{{ $emailData->code }},</p>
-<p><b>task's url:</b>&nbsp;{{ $emailData->url }}</p>
-</div>
-
-<div>
-Task body result:</br>
-{{ $emailData->body }}
-</div>
-
-
-<div dir="ltr"><div style="color:rgb(0,0,0);font-family:&quot;Times New Roman&quot;;font-size:medium;width:130px;max-width:130px;min-width:100px;float:left;padding-top:15px">
-    <img height="172" src="https://scontent-mxp1-1.xx.fbcdn.net/v/t1.6435-1/p200x200/42652500_2348653915150222_514296014136410112_n.jpg?_nc_cat=108&amp;ccb=1-3&amp;_nc_sid=dbb9e7&amp;_nc_ohc=y1VQxsIgErgAX9u6mqy&amp;_nc_ht=scontent-mxp1-1.xx&amp;tp=6&amp;oh=11b152ea21c6b239f69b3e1e5dc9c7fe&amp;oe=60B97686" width="172" alt="Simplenetworks"
-
-</div>
-<div style="width:190px;max-width:190px;font-family:&quot;Lucida Grande&quot;,Tahoma;font-size:12px;margin-top:0.5em;
-color:rgb(102,102,102);letter-spacing:2px;border-left:2px solid rgb(211,216,215);padding-top:3px;padding-left:10px;overflow:hidden">
-<div id="div_block-76-30" class="ct-div-block footer__block"><h4 id="headline-65-30" class="ct-headline footer__heading">Contattaci:</h4><a id="link_text-80-30" class="ct-link-text footer__link" href="tel:+39%200541%201646196" target="_self">+39 0541 1646196</a><a id="link_text-83-30" class="ct-link-text footer__link" href="mailto:info@simplenetworks.it" target="_self">info@simplenetworks.it&nbsp;</a><a id="link_text-125-30" class="ct-link-text footer__link" href="https://wa.me/393771227836" target="_self">Scrivici su WhatsApp</a></div></div>
-<div style="width:190px;max-width:190px;font-family:'Lucida Grande',Tahoma;font-size:12px;margin-top:0.5em;color:rgb(102,102,102);letter-spacing:2px;border-left-width:2px;border-left-style:solid;border-left-color:rgb(251,224,181);padding-top:3px;padding-left:10px;overflow:hidden">
-</div></div>
-
-
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js" integrity="sha384-SR1sx49pcuLnqZUnnPwx6FCym0wLsk5JZuNx2bPPENzswTNFaQU1RDvt3wT4gWFG" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.min.js" integrity="sha384-j0CNLUeiqtyaRmlzUHCPZ+Gy5fQu0dQ6eZ/xAww941Ai1SxSY+0EQqNXNE6DZiVc" crossorigin="anonymous"></script>
-
-</body>
-</html> --}}
-
+@php
+    //use Lorisleiva\CronTranslator\CronTranslator;
+    use App\LaraWebCronFunctions;
+    use Illuminate\Support\Str;
+@endphp
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns:v="urn:schemas-microsoft-com:vml">
@@ -300,8 +263,12 @@ color:rgb(102,102,102);letter-spacing:2px;border-left:2px solid rgb(211,216,215)
 
                                             <tr>
                                                 <td align="left" style="color:#888888; font-size: 12px; font-family: 'Work Sans', Calibri, sans-serif; line-height: 22px; letter-spacing: 2px;">
-                                                    {{ $emailData->body }}
-                                                </td>                                                    </td>
+                                                    {{Str::substr($emailData->body, 0, config('larawebcron.body_number_of_char'))}}
+                                                    @if (Str::of($emailData->body)->length()>config('larawebcron.body_number_of_char'))
+                                                        <a href="{{ route('webcronresults.showbodyresult', $emailData) }}" target="_blank">...</a>
+                                                    @endif
+                                                </td>
+                                            {{-- </td> --}}
                                             </tr>
                                             <tr>
                                                 <td height="10" style="font-size: 10px; line-height: 10px;">&nbsp;</td>

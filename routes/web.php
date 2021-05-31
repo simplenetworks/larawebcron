@@ -32,7 +32,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::get('webcronresults/sendresultemailbyid/{webcronresult}', 'App\Http\Controllers\WebCronResultController@sendResultEmailById')->name('webcronresults.sendresultemailbyid');
     Route::get('webcronresults/search', 'App\Http\Controllers\WebCronResultController@search')->name('webcronresults.search');
-
+    Route::get('webcronresults/showbodyresult/{webcronresult}', 'App\Http\Controllers\WebCronResultController@showBodyResult')->name('webcronresults.showbodyresult');
     Route::resource('webcronresults', \App\Http\Controllers\WebCronResultController::class);
 
     Route::resource('users', \App\Http\Controllers\UsersController::class);

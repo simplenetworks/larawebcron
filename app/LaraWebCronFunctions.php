@@ -32,9 +32,6 @@ class LaraWebCronFunctions
      */
     public static function sendResultEmailById($resultId){
 
-        //echo "Send mail for result Id: $resultId" .PHP_EOL;
-
-        //$webCronResults = WebCronResult::selectRaw('count(*) as executions')->where('id',$resultId)->count('id')->firstOrFail();
         $webCronResult = WebCronResult::join('web_cron_tasks', 'web_cron_results.web_cron_task_id', '=', 'web_cron_tasks.id')
                                         ->select('web_cron_results.id','name','url', 'code','duration', 'body','web_cron_results.updated_at','log_type', 'email')
                                         ->findOrFail($resultId);
@@ -63,8 +60,10 @@ class LaraWebCronFunctions
         if (config('app.timezone')) {
             $date->setTimezone(config('app.timezone'));
         }
+        $nextDate = new CronExpression($webCronTaskExpression);
+        return $nextDate->getNextRunDate($date->toDateTimeString())->format('Y-m-d H:i:s');
+        //return (CronExpression::factory($webCronTaskExpression)->getNextRunDate($date->toDateTimeString()))->format('Y-m-d H:i:s');
 
-        return (CronExpression::factory($webCronTaskExpression)->getNextRunDate($date->toDateTimeString()))->format('Y-m-d H:i:s');
     }
 
     /**
@@ -85,6 +84,35 @@ class LaraWebCronFunctions
             Log::alert($e->getMessage());
             return "";
         }
+    }
+
+    /**
+     * Get the status of system
+     *
+     * @return integer
+     *
+     */
+    public static function getSystemStatus(){
+
+        $webCronResult = WebCronResult::orderBy('code', 'desc')->first();
+
+        if ($webCronResult) {
+
+            if ($webCronResult->code >= 300) {
+                // bad status
+                return 0;
+            }else{
+                // good status
+                return 2;
+            };
+
+        }else{
+
+            // No execution
+            return 1;
+
+        };
+
     }
 
 }

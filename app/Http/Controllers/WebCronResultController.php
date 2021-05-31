@@ -153,16 +153,11 @@ public function search(Request $request)
 
     if ($stringLen>0){
 
-        $body = WebCronResult::where('body',  'like', '%' .$string .'%');
-        $id = WebCronResult::where('id',  'like', '%' .$string .'%');
-        $createdAt = WebCronResult::where('created_at',  'like', '%' .$string .'%');
-        $updatedAt = WebCronResult::where('updated_at',  'like', '%' .$string .'%');
-
         $webcronresults = WebCronResult::where('code', 'like', '%' .$string .'%')
-                                        ->union($body)
-                                        ->union($id)
-                                        ->union($createdAt)
-                                        ->union($updatedAt)
+                                        ->orWhere('body',  'like', '%' .$string .'%')
+                                        ->orWhere('id',  'like', '%' .$string .'%')
+                                        ->orWhere('created_at',  'like', '%' .$string .'%')
+                                        ->orWhere('updated_at',  'like', '%' .$string .'%')
                                         ->paginate(10);
 
     } else {
@@ -180,6 +175,13 @@ public function search(Request $request)
     abort_if(Gate::denies('task_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
     return view('webcronresults.show', compact('webcronresult'));
+ }
+
+ public function showBodyResult(WebCronResult $webcronresult)
+ {
+    abort_if(Gate::denies('task_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+    return view('webcronresults.showbody', compact('webcronresult'));
  }
 
  public function destroy(WebCronResult $webcronresult)

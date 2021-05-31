@@ -14,9 +14,12 @@ use Symfony\Component\HttpFoundation\Response;
 use App\Models\WebCronResult;
 use \Illuminate\Support\Str;
 
-const REGEX_CRON = "/(@(annually|yearly|monthly|weekly|daily|hourly|reboot))|(@every (\d+(ns|us|µs|ms|s|m|h))+)|(\*|(?:[0-9]|(?:[1-5][0-9]))(?:(?:\-[0-9]|\-(?:[1-5][0-9]))?|(?:\,(?:[0-9]|(?:[1-5][0-9])))*)) (\*|(?:[0-9]|1[0-9]|2[0-3])(?:(?:\-(?:[0-9]|1[0-9]|2[0-3]))?|(?:\,(?:[0-9]|1[0-9]|2[0-3]))*)) (\*|(?:[1-9]|(?:[12][0-9])|3[01])(?:(?:\-(?:[1-9]|(?:[12][0-9])|3[01]))?|(?:\,(?:[1-9]|(?:[12][0-9])|3[01]))*)) (\*|(?:[1-9]|1[012]|JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)(?:(?:\-(?:[1-9]|1[012]|JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC))?|(?:\,(?:[1-9]|1[012]|JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC))*)) (\*|(?:[0-6]|SUN|MON|TUE|WED|THU|FRI|SAT)(?:(?:\-(?:[0-6]|SUN|MON|TUE|WED|THU|FRI|SAT))?|(?:\,(?:[0-6]|SUN|MON|TUE|WED|THU|FRI|SAT))*))$/";
-//const REGEX_EMAIL = "/^\S+@\S+\.\S+$/";
-const REGEX_EMAIL = "/^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$/"; //accept email@localhost
+//const REGEX_CRON = "/(@(annually|yearly|monthly|weekly|daily|hourly|reboot))|(@every (\d+(ns|us|µs|ms|s|m|h))+)|(\*|(?:[0-9]|(?:[1-5][0-9]))(?:(?:\-[0-9]|\-(?:[1-5][0-9]))?|(?:\,(?:[0-9]|(?:[1-5][0-9])))*)) (\*|(?:[0-9]|1[0-9]|2[0-3])(?:(?:\-(?:[0-9]|1[0-9]|2[0-3]))?|(?:\,(?:[0-9]|1[0-9]|2[0-3]))*)) (\*|(?:[1-9]|(?:[12][0-9])|3[01])(?:(?:\-(?:[1-9]|(?:[12][0-9])|3[01]))?|(?:\,(?:[1-9]|(?:[12][0-9])|3[01]))*)) (\*|(?:[1-9]|1[012]|JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)(?:(?:\-(?:[1-9]|1[012]|JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC))?|(?:\,(?:[1-9]|1[012]|JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC))*)) (\*|(?:[0-6]|SUN|MON|TUE|WED|THU|FRI|SAT)(?:(?:\-(?:[0-6]|SUN|MON|TUE|WED|THU|FRI|SAT))?|(?:\,(?:[0-6]|SUN|MON|TUE|WED|THU|FRI|SAT))*))$/";
+
+//const REGEX_EMAIL = "/^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$/"; //accept email@localhost
+
+
+
 // different regex validator email, ref. http://emailregex.com/
 // const REGEX_EMAIL = "/(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])";
 
@@ -44,13 +47,13 @@ class WebCronTaskController extends Controller
         $validator = Validator::make($request->all(), [
             'url' => 'required|max:255',
             //'schedule' => 'required|max:255',
-            'schedule' =>array('required','max:255',"regex:" .REGEX_CRON),
+            'schedule' =>array('required','max:255',"regex:" .config('larawebcron.regex_cron_expression')),
             'timeout' => 'required|integer', //default 60
             'attempts' => 'required|integer', //default 1
             'retry_waits' => 'required|integer', //default 5000
             'name' => 'nullable|max:255',
             'site' => 'nullable|max:255',
-            'email' => array('nullable','max:255',"regex:" .REGEX_EMAIL),
+            'email' => array('nullable','max:255',"regex:" .config('larawebcron.regex_email')),
             'log_type' => 'required|integer', //default 0
             'status' => 'required|integer', //default 1
             'enabled' => 'required|boolean', //default 0
@@ -99,14 +102,14 @@ class WebCronTaskController extends Controller
 
         $validator = Validator::make($request->all(), [
             'url' => 'required|max:255',
-            'schedule' =>array('required','max:255',"regex:" .REGEX_CRON),
+            'schedule' =>array('required','max:255',"regex:" .config('larawebcron.regex_cron_expression')),
             'timeout' => 'required|integer', //default 60
             'attempts' => 'required|integer', //default 1
             'retry_waits' => 'required|integer', //default 5000
             'name' => 'nullable|max:255',
             'site' => 'nullable|max:255',
             //'email' => 'nullable|email|max:255',
-            'email' => array('nullable','max:255',"regex:" .REGEX_EMAIL),
+            'email' => array('nullable','max:255',"regex:" .config('larawebcron.regex_email')),
             'log_type' => 'required|integer', //default 0
             'status' => 'required|integer', //default 0
             'enabled' => 'required|boolean', //default 0
@@ -143,13 +146,13 @@ class WebCronTaskController extends Controller
         $webCronTask = WebCronTask::findOrFail($id);
         $validator = Validator::make($request->all(), [
             'url' => 'sometimes|required|max:255',
-            'schedule' =>array('sometimes','required','max:255',"regex:" .REGEX_CRON),
+            'schedule' =>array('sometimes','required','max:255',"regex:" .config('larawebcron.regex_cron_expression')),
             'timeout' => 'sometimes|required|integer', //default 60
             'attempts' => 'sometimes|required|integer', //default 1
             'retry_waits' => 'sometimes|required|integer', //default 5000
             'name' => 'sometimes|nullable|max:255',
             'site' => 'sometimes|nullable|max:255',
-            'email' => array('sometimes','nullable','max:255',"regex:" .REGEX_EMAIL),
+            'email' => array('sometimes','nullable','max:255',"regex:" .config('larawebcron.regex_email')),
             'log_type' => 'sometimes|required|integer', //default 0
             'status' => 'sometimes|required|integer', //default 1
             'enabled' => 'sometimes|required|boolean', //default 0
@@ -243,24 +246,35 @@ class WebCronTaskController extends Controller
         $stringLen = Str::of($string)->length();
 
         if ($stringLen>0){
-
-            $site = WebCronTask::where('site', 'like', '%' .$string .'%');
-            $url = WebCronTask::where('url',  'like', '%' .$string .'%');
-            $id = WebCronTask::where('id',  'like', '%' .$string .'%');
-            $email = WebCronTask::where('email',  'like', '%' .$string .'%');
-            $schedule = WebCronTask::where('schedule',  'like', '%' .$string .'%');
-            $startDate = WebCronTask::where('start_date',  'like', '%' .$string .'%');
-            $endDate = WebCronTask::where('end_date',  'like', '%' .$string .'%');
+            //$query = WebCronTask::query();
 
             $webcrontasks = WebCronTask::where('name', 'like', '%' .$string .'%')
-                                            ->union($site)
-                                            ->union($id)
-                                            ->union($url)
-                                            ->union($email)
-                                            ->union($schedule)
-                                            ->union($startDate)
-                                            ->union($endDate)
-                                            ->paginate(10);
+                                        ->orWhere('site', 'like', '%' .$string .'%')
+                                        ->orWhere('url',  'like', '%' .$string .'%')
+                                        ->orWhere('id',  'like', '%' .$string .'%')
+                                        ->orWhere('email',  'like', '%' .$string .'%')
+                                        ->orWhere('schedule',  'like', '%' .$string .'%')
+                                        ->orWhere('start_date',  'like', '%' .$string .'%')
+                                        ->orWhere('end_date',  'like', '%' .$string .'%')
+                                        ->paginate(10);
+
+            // $site = WebCronTask::where('site', 'like', '%' .$string .'%');
+            // $url = WebCronTask::where('url',  'like', '%' .$string .'%');
+            // $id = WebCronTask::where('id',  'like', '%' .$string .'%');
+            // $email = WebCronTask::where('email',  'like', '%' .$string .'%');
+            // $schedule = WebCronTask::where('schedule',  'like', '%' .$string .'%');
+            // $startDate = WebCronTask::where('start_date',  'like', '%' .$string .'%');
+            // $endDate = WebCronTask::where('end_date',  'like', '%' .$string .'%');
+
+            // $webcrontasks = WebCronTask::where('name', 'like', '%' .$string .'%')
+            //                                 ->union($site)
+            //                                 ->union($id)
+            //                                 ->union($url)
+            //                                 ->union($email)
+            //                                 ->union($schedule)
+            //                                 ->union($startDate)
+            //                                 ->union($endDate)
+            //                                 ->paginate(10);
 
         } else {
 
