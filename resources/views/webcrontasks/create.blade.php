@@ -69,7 +69,6 @@
                             @enderror
 
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-8 mt-5 mx-7">
-                            {{-- <div class="md:grid md:grid-cols-3 md:gap-6"> --}}
                                 <div class="grid grid-cols-1">
                                     <label for="timeout" class="block font-medium text-sm text-gray-700">Timeout (in seconds)</label>
                                     <input placeholder="60" type="text" name="timeout" id="timeout" type="text" class="form-input rounded-md shadow-sm mt-1 block w-full"
@@ -95,28 +94,6 @@
                                     @enderror
                                 </div>
                               </div>
-
-                            {{-- <label for="timeout" class="block font-medium text-sm text-gray-700">timeout (in seconds)</label>
-                            <input placeholder="60" type="text" name="timeout" id="timeout" type="text" class="form-input rounded-md shadow-sm mt-1 block w-full"
-                                   value="{{ old('timeout', '') }}"  required/>
-                            @error('timeout')
-                                <p class="text-sm text-red-600">{{ $message }}</p>
-                            @enderror
-
-                            <label for="attempts" class="block font-medium text-sm text-gray-700">attempts (in seconds)</label>
-                            <input placeholder="1" type="text" name="attempts" id="attempts" type="text" class="form-input rounded-md shadow-sm mt-1 block w-full"
-                                   value="{{ old('attempts', '') }}"  required/>
-                            @error('attempts')
-                                <p class="text-sm text-red-600">{{ $message }}</p>
-                            @enderror
-
-                            <label for="retry_waits" class="block font-medium text-sm text-gray-700">retry_waits (in milliseconds)</label>
-                            <input placeholder="5000" type="text" name="retry_waits" id="retry_waits" type="text" class="form-input rounded-md shadow-sm mt-1 block w-full"
-                                   value="{{ old('retry_waits', '') }}"  required/>
-                            @error('url')
-                                <p class="text-sm text-red-600">{{ $message }}</p>
-                            @enderror --}}
-
                             <label for="email" class="block font-medium text-sm text-gray-700">Email for log</label>
                             <input type="email" name="email" id="email" type="text" class="form-input rounded-md shadow-sm mt-1 block w-full"
                                    value="{{ old('email', '') }}" />
@@ -144,24 +121,6 @@
                                 </div>
 
                               </div>
-
-
-
-
-                              {{-- <label for="start_date" class="block font-medium text-sm text-gray-700">Start date</label>
-                              <input type="date" name="start_date" id="start_date" type="text" class="form-input rounded-md shadow-sm mt-1 block w-full"
-                                     value="{{ old('start_date', '') }}" />
-                              @error('start_date')
-                                  <p class="text-sm text-red-600">{{ $message }}</p>
-                              @enderror
-
-                              <label for="end_date" class="block font-medium text-sm text-gray-700">End date</label>
-                              <input type="date" name="end_date" id="end_date" type="text" class="form-input rounded-md shadow-sm mt-1 block w-full"
-                                     value="{{ old('end_date', '') }}" />
-                              @error('end_date')
-                                  <p class="text-sm text-red-600">{{ $message }}</p>
-                              @enderror --}}
-
                               <div class="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-8 mt-5 mx-7">
                                 <div class="grid grid-cols-1">
                                     <label for="start_date" class="block font-medium text-sm text-gray-700">Start date</label>

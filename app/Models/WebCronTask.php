@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Models;
-
+use App\LaraWebCronFunctions;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Kyslik\ColumnSortable\Sortable;
@@ -31,9 +31,18 @@ class WebCronTask extends Model
         'status',
         'schedule',
         'name',
-        'enabled'
+        'enabled',
+        'next_run_date'
     ];
 
+/**
+     * The accessors to append to the model's array form.
+     *
+     * @var array
+     */
+    protected $appends = [
+        'next_run_date',
+    ];
 
     public function webCronResults() {
         return $this->hasMany('App\Models\WebCronResult');
@@ -72,5 +81,27 @@ class WebCronTask extends Model
 
     }
 
-}
+    /**
+     * Get next run date of the task
+     *
+     * @return date
+     *
+     */
+    public function getNextRunDateAttribute(){
 
+        return LaraWebCronFunctions::getNextTaskRunDate($this->schedule);
+
+    }
+
+    // public function checkTasksStatus(){
+
+    //     $current_day = Carbon::now();
+
+    //     if ($current_day> $this->end_date){
+    //         $this->enabled = 0;
+    //         $this->save();
+    //     }
+
+    // }
+
+}

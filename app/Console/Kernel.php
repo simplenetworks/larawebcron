@@ -7,9 +7,7 @@ use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use App\Models\WebCronTask;
 use App\Models\WebCronResult;
 use Illuminate\Support\Facades\Http;
-use DB;
 use Illuminate\Support\Facades\Log;
-//use App\LaraWebCronFunctions;
 
 class Kernel extends ConsoleKernel
 {
@@ -31,7 +29,6 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        //$tasks = WebCronTask::get();
 
         $current_day = Date('Y-m-d');
 
@@ -64,7 +61,7 @@ class Kernel extends ConsoleKernel
                 {
 
                     $result->body = utf8_encode('Caught exception: ' .$e->getMessage());
-                    $result->code = 500; //$response->status();
+                    $result->code = 500;
 
                     Log::alert($logMessage);
                     Log::alert($e->getMessage());

@@ -2,23 +2,16 @@
 
 namespace App;
 
-use Illuminate\Console\Scheduling\Schedule;
-use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use App\Models\WebCronTask;
 use App\Models\WebCronResult;
 
 use App\Mail\ResultEmail;
 use Illuminate\Support\Facades\Mail;
 
-use Illuminate\Support\Facades\Http;
-use DB;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 use Cron\CronExpression;
-// use Illuminate\Console\Command;
-// use Illuminate\Support\Str;
 
-//use Lorisleiva\CronTranslator\CronTranslator;
 use Panlatent\CronExpressionDescriptor\ExpressionDescriptor;
 
 class LaraWebCronFunctions
@@ -62,7 +55,6 @@ class LaraWebCronFunctions
         }
         $nextDate = new CronExpression($webCronTaskExpression);
         return $nextDate->getNextRunDate($date->toDateTimeString())->format('Y-m-d H:i:s');
-        //return (CronExpression::factory($webCronTaskExpression)->getNextRunDate($date->toDateTimeString()))->format('Y-m-d H:i:s');
 
     }
 
@@ -107,9 +99,41 @@ class LaraWebCronFunctions
             };
 
         }else{
-
             // No execution
             return 1;
+
+        };
+
+    }
+
+    /**
+     * Get the next task execution in the system
+     *
+     * @return string
+     *
+     */
+    public static function getNextTaskExecution(){
+
+        $current_day = Carbon::now();
+
+        $tasks = WebCronTask::where('enabled', TRUE)
+                            ->where('start_date', '<=', $current_day)
+                            ->where('end_date', '>=', $current_day)
+                            ->where(function($query) {
+                                $query->whereRaw('max_runs > (SELECT count(id) FROM web_cron_results where web_cron_task_id= web_cron_tasks.id) ')
+                                ->orWhere('max_runs', '=', 0);})
+                            ->limit(5)
+                            ->get();
+                        $tasks = $tasks->sortBy('next_run_date');
+
+        if ($tasks) {
+
+            return $tasks;
+
+        }else{
+
+            // No tasks
+            return null;
 
         };
 

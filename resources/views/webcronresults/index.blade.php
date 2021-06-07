@@ -1,5 +1,4 @@
 @php
-    //use Lorisleiva\CronTranslator\CronTranslator;
     use App\LaraWebCronFunctions;
     use Illuminate\Support\Str;
 @endphp
@@ -149,7 +148,6 @@
                             </table>
                             <div class="flex-1 flex ml-2 mr-2 mt-2 mb-2">
                                 {!! $webcronresults->appends(\Request::except('page'))->render() !!}
-                                {{-- {{ $webcronresults->links() }} --}}
                             </div>
                         </div>
                     </div>

@@ -17,7 +17,7 @@ class WebCronResultController extends Controller
 {
     // Route::get('/results', 'App\Http\Controllers\WebCronResultController@getResults');
     public function getResults() {
-        //Leggere tutti i record della tabella web_cron_results
+
         $webCronResults = WebCronResult::orderBy('updated_at','desc')->get();
         return response()->json($webCronResults, 200);
     }
@@ -52,7 +52,6 @@ class WebCronResultController extends Controller
         $webCronResult->web_cron_task_id = $request->input('web_cron_task_id');
         $webCronResult->save();
 
-        //Emettere una risposta
         return response()->json($webCronResult, 201);
     }
 
@@ -138,7 +137,6 @@ class WebCronResultController extends Controller
 
     $webcronresults = WebCronResult::sortable('id')->paginate(10);
 
-
     return view('webcronresults.index', compact('webcronresults'))
         ->with('i', (request()->input('page', 1) - 1) * 10);
  }
@@ -158,6 +156,7 @@ public function search(Request $request)
                                         ->orWhere('id',  'like', '%' .$string .'%')
                                         ->orWhere('created_at',  'like', '%' .$string .'%')
                                         ->orWhere('updated_at',  'like', '%' .$string .'%')
+                                        ->sortable('id')
                                         ->paginate(10);
 
     } else {
@@ -201,6 +200,20 @@ public function search(Request $request)
     LaraWebCronFunctions::sendResultEmailById($webcronresult->id);
 
     return redirect()->route('webcrontasks.show',$webcronresult->web_cron_task_id);
+ }
+
+ public function jsonResultsDownload()
+ {
+
+     $jsongFile = time() .'_larawebcron_results.json';
+
+     return response()->streamDownload(function () {
+
+         $data = WebCronResult::get();
+         echo $data;
+
+     }, $jsongFile);
+
  }
 
 }

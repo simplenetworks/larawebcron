@@ -1,5 +1,4 @@
 @php
-    //use Lorisleiva\CronTranslator\CronTranslator;
     use App\LaraWebCronFunctions;
 @endphp
 
@@ -9,12 +8,8 @@
             Tasks List
         </h2>
     </x-slot>
-
     <div>
         <div class="max-w-6xl mx-auto py-10 sm:px-6 lg:px-8">
-
-
-
             <div class="block mb-8">
 
                 <div class="grid grid-cols-2 md:grid-cols-2 gap-5 md:gap-8 mt-5 mx-7">
@@ -30,7 +25,6 @@
                     </div>
 
                 </div>
-
             </div>
             <div class="flex flex-col">
                 <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -120,9 +114,7 @@
                                                    echo LaraWebCronFunctions::getTraslationOfCronExpression($webcrontask->schedule); //CronTranslator::translate($webcrontask->schedule);
                                                 @endphp
                                             </div>
-
                                         </td>
-
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                             <div class="flex item-center justify-center">
                                                 <div class="w-4 mr-2 transform hover:text-purple-500 hover:scale-110">
@@ -176,7 +168,6 @@
                             </table>
                             <div class="flex-1 flex ml-2 mr-2 mt-2 mb-2">
                                 {!! $webcrontasks->appends(\Request::except('page'))->render() !!}
-                                {{-- {{ $webcrontasks->links() }} --}}
                             </div>
                         </div>
                     </div>

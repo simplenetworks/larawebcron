@@ -1,5 +1,4 @@
 @php
-    //use Lorisleiva\CronTranslator\CronTranslator;
     use App\LaraWebCronFunctions;
     use Illuminate\Support\Str;
 @endphp
@@ -433,24 +432,6 @@
                                     <td height="20" width="5" style="font-size: 20px; line-height: 20px;">&nbsp;</td>
                                 </tr>
                             </table>
-
-                            <!-- <table border="0" align="right" cellpadding="0" cellspacing="0" style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;"
-                                class="container590">
-
-                                <tr>
-                                    <td align="center">
-                                        <table align="center" border="0" cellpadding="0" cellspacing="0">
-                                            <tr>
-                                                <td align="center">
-                                                    <a style="font-size: 14px; font-family: 'Work Sans', Calibri, sans-serif; line-height: 24px;color: #5caad2; text-decoration: none;font-weight:bold;"
-                                                        href="UnsubscribeURL">UNSUBSCRIBE</a>
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </td>
-                                </tr>
-
-                            </table> -->
                         </td>
                     </tr>
 

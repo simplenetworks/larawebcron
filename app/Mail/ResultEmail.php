@@ -33,11 +33,6 @@ class ResultEmail extends Mailable
         return $this->from(env('MAIL_FROM_ADDRESS'),env('MAIL_FROM_NAME'))
                     ->view('emails.resultMail')
                     ->text('emails.resultMail_plain');
-                    // ->with(
-                    //    [
-                    //         'testVarOne' => '1',
-                    //         'testVarTwo' => '2',
-                    // ]);
     }
 
 }
