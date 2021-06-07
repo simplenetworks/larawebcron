@@ -37,7 +37,7 @@ password: password
 
 (or as user, not admin user: user@user.com , password: password)
 
-or register user ( NOT ADMIN)
+or register a new user ( NOT ADMIN)
 
 [http://localhost:8000/register](http://localhost:8000/register)
 
@@ -57,7 +57,7 @@ php artisan schedule:run
 ## Cron Expression
 A CRON expression is a string representing the schedule for a particular command to execute. For more [example](https://crontab.guru/#*_*_*_*).
 The parts of a CRON schedule are as follows:
-```bash
+```
 
    *    *    *    *    *
    -    -    -    -    -

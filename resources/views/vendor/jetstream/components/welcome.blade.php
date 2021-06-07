@@ -76,7 +76,7 @@
                 </div>
                 <div class="border-t border-gray-200">
                   <dl>
-                    <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                    <div class="bg-white-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                         <dt class="text-sm font-medium text-gray-500">
                           <strong>Next Tasks in queue</strong>
                         </dt>
@@ -87,22 +87,22 @@
                                     <thead class="bg-gray-50">
                                     <tr>
                                         <th scope="col" width="50" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            @sortablelink('id')
+                                            id
                                         </th>
                                         <th scope="col" width="50" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            @sortablelink('status')
+                                            status
                                         </th>
                                         <th scope="col" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            @sortablelink('name')
+                                            name
                                         </th>
                                         <th scope="col" width="100" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            @sortablelink('enabled')
+                                            enabled
                                         </th>
                                         <th scope="col" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            @sortablelink('schedule')
+                                            schedule
                                         </th>
                                         <th scope="col" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            @sortablelink('webcrontask.next_run_date','Next run date')
+                                            Next run date
                                         </th>
                                         <th scope="col" width="200" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
 
@@ -153,15 +153,12 @@
                                               </td>
 
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                                <form class="inline-block" action="{{ route('webcrontasks.changetaskenabled', $webcrontask) }}" method="POST">
-                                                    <input type="hidden" name="_method" value="PATCH">
-                                                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                                    @if ($webcrontask->enabled)
-                                                        <input type="submit" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800" value="Enabled">
-                                                    @else
-                                                        <input type="submit" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800" value="Disabled">
-                                                    @endif
-                                                </form>
+                                                @if ($webcrontask->enabled)
+                                                    <input type="submit" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800" value="Enabled">
+                                                @else
+                                                    <input type="submit" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800" value="Disabled">
+                                                @endif
+
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap">
                                                 <div class="text-sm text-gray-900">{{ $webcrontask->schedule }}</div>
@@ -188,6 +185,15 @@
                                                                 <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
                                                                 <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
                                                             </svg>
+                                                        </a>
+                                                    </div>
+                                                    <div class="w-4 mr-2 transform hover:text-purple-500 hover:scale-110">
+                                                        <a href="{{ route('webcrontasks.jsontaskandresultsdownload', $webcrontask->id) }}" class="text-blue-600 hover:text-blue-900 mb-2 mr-2">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-down" viewBox="0 0 16 16">
+                                                                <title>Download Tasks and Result for: {{ $webcrontask->name }}</title>
+                                                                <path fill-rule="evenodd" d="M3.5 10a.5.5 0 0 1-.5-.5v-8a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 0 0 1h2A1.5 1.5 0 0 0 14 9.5v-8A1.5 1.5 0 0 0 12.5 0h-9A1.5 1.5 0 0 0 2 1.5v8A1.5 1.5 0 0 0 3.5 11h2a.5.5 0 0 0 0-1h-2z"/>
+                                                                <path fill-rule="evenodd" d="M7.646 15.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 14.293V5.5a.5.5 0 0 0-1 0v8.793l-2.146-2.147a.5.5 0 0 0-.708.708l3 3z"/>
+                                                              </svg>
                                                         </a>
                                                     </div>
                                                     <div class="w-4 mr-2 transform hover:text-purple-500 hover:scale-110">
@@ -223,7 +229,7 @@
                                 </table>
 
                             </div>
-                    <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                    <div class="bg-white-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                       <dt class="text-sm font-medium text-gray-500">
                         <strong>Last Results</strong>
                       </dt>
@@ -233,6 +239,9 @@
                             <table class="min-w-full divide-y divide-gray-200 w-full vertical-align: middle">
                                 <thead class="bg-gray-50">
                                 <tr>
+                                    <th scope="col" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        ID
+                                    </th>
                                     <th scope="col" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Status
                                     </th>
@@ -253,6 +262,9 @@
                                 <tbody class="bg-white divide-y divide-gray-200">
                                     @forelse($webCronResults = WebcronResult::orderByDesc('updated_at')->limit(3)->get() as $result)
                                     <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                            {{$result->id}}
+                                        </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                             @if ($result->code>=300)
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"  fill="red" class="bi bi-exclamation-circle" viewBox="0 0 16 16">
@@ -304,6 +316,15 @@
                                                             <title>Expand body result</title>
                                                             <path fill-rule="evenodd" d="M3.646 10.146a.5.5 0 0 1 .708 0L8 13.793l3.646-3.647a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 0-.708zm0-4.292a.5.5 0 0 0 .708 0L8 2.207l3.646 3.647a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 0 0 0 .708zM1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8z"/>
                                                         </svg>
+                                                    </a>
+                                                </div>
+                                                <div class="w-4 mr-2 transform hover:text-purple-500 hover:scale-110">
+                                                    <a href="{{ route('webcronresults.jsonresultdownload', $result->id) }}" class="text-blue-600 hover:text-blue-900 mb-2 mr-2">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-down" viewBox="0 0 16 16">
+                                                            <title>Download Result for id: {{ $result->id}}</title>
+                                                            <path fill-rule="evenodd" d="M3.5 10a.5.5 0 0 1-.5-.5v-8a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 0 0 1h2A1.5 1.5 0 0 0 14 9.5v-8A1.5 1.5 0 0 0 12.5 0h-9A1.5 1.5 0 0 0 2 1.5v8A1.5 1.5 0 0 0 3.5 11h2a.5.5 0 0 0 0-1h-2z"/>
+                                                            <path fill-rule="evenodd" d="M7.646 15.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 14.293V5.5a.5.5 0 0 0-1 0v8.793l-2.146-2.147a.5.5 0 0 0-.708.708l3 3z"/>
+                                                          </svg>
                                                     </a>
                                                 </div>
                                                 <div class="w-4 mr-2 transform hover:text-purple-500 hover:scale-110">

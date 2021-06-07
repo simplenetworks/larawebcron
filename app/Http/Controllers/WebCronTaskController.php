@@ -346,5 +346,17 @@ class WebCronTaskController extends Controller
         }, $jsongFile);
 
     }
+    public function jsonTaskAndResultsDownload(WebCronTask $webcrontask)
+    {
 
+        $jsongFile = time() .'_larawebcron_task_' .$webcrontask->id .'.json';
+
+        return response()->streamDownload(function () use($webcrontask) {
+
+            $data = WebCronTask::with('webCronResults')->find($webcrontask->id);
+            echo $data;
+
+        }, $jsongFile);
+
+    }
 }

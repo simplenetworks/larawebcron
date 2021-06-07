@@ -216,4 +216,19 @@ public function search(Request $request)
 
  }
 
+
+ public function jsonResultDownload(WebCronResult $webcronresult)
+ {
+
+     $jsongFile = time() .'_larawebcron_result_' .$webcronresult->id .'.json';
+
+     return response()->streamDownload(function () use($webcronresult) {
+
+         $data = WebCronResult::find($webcronresult->id);
+         echo $data;
+
+     }, $jsongFile);
+
+ }
+
 }
