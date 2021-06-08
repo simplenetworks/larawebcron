@@ -22,7 +22,8 @@ class WebCronTask extends Model
         'log_type',
         'enabled',
         'start_date',
-        'end_date'
+        'end_date',
+        'max_runs'
     ];
 
 

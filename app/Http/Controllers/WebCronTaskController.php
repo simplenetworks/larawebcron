@@ -46,6 +46,7 @@ class WebCronTaskController extends Controller
             'email' => array('nullable','max:255',"regex:" .config('larawebcron.regex_email')),
             'log_type' => 'required|integer', //default 0
             'status' => 'required|integer', //default 1
+            'max_runs' => 'required|integer', //default 0
             'enabled' => 'required|boolean', //default 0
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date'
@@ -69,6 +70,7 @@ class WebCronTaskController extends Controller
         $webCronTask->log_type = $request->input('log_type');
         $webCronTask->status = $request->input('status');
         $webCronTask->enabled = $request->input('enabled');
+        $webCronTask->max_runs = $request->input('max_runs');
         $webCronTask->start_date = $request->input('start_date');
         $webCronTask->end_date = $request->input('end_date');
         $webCronTask->save();
@@ -102,6 +104,7 @@ class WebCronTaskController extends Controller
             'log_type' => 'required|integer', //default 0
             'status' => 'required|integer', //default 0
             'enabled' => 'required|boolean', //default 0
+            'max_runs' => 'required|integer', //default 0
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date'
         ]);
@@ -125,6 +128,7 @@ class WebCronTaskController extends Controller
         $webCronTask->enabled = $request->input('enabled');
         $webCronTask->start_date = $request->input('start_date');
         $webCronTask->end_date = $request->input('end_date');
+        $webCronTask->max_runs = $request->input('max_runs');
         $webCronTask->save();
 
         return response()->json($webCronTask, 200);
@@ -145,6 +149,7 @@ class WebCronTaskController extends Controller
             'log_type' => 'sometimes|required|integer', //default 0
             'status' => 'sometimes|required|integer', //default 1
             'enabled' => 'sometimes|required|boolean', //default 0
+            'max_runs' => 'sometimes|required|integer', //default 0
             'start_date' => 'sometimes|nullable|date',
             'end_date' => 'sometimes|nullable|date'
         ]);
@@ -193,6 +198,10 @@ class WebCronTaskController extends Controller
 
         if($request->has('status')) {
             $webCronTask->status = $request->input('status');
+        }
+
+        if($request->has('max_runs')) {
+            $webCronTask->max_runs = $request->input('max_runs');
         }
 
         if($request->has('enabled')) {

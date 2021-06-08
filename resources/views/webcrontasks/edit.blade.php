@@ -114,7 +114,7 @@
                                 <div class="grid grid-cols-1">
                                     <label for="max_runs" class="block font-medium text-sm text-gray-700">Max runs (0 unlimited)</label>
                                     <input type="text" name="max_runs" id="max_runs" type="text" class="form-input rounded-md shadow-sm mt-1 block w-full"
-                                           value="{{ old('max_runs', $webcrontask->max_runs) }}" />
+                                           value="{{ old('max_runs', $webcrontask->max_runs) }}" required/>
                                     @error('max_runs')
                                         <p class="text-sm text-red-600">{{ $message }}</p>
                                     @enderror

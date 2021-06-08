@@ -114,7 +114,7 @@
                                 <div class="grid grid-cols-1">
                                     <label for="max_runs" class="block font-medium text-sm text-gray-700">Max runs (0 unlimited)</label>
                                     <input placeholder="0" type="text" name="max_runs" id="max_runs" type="text" class="form-input rounded-md shadow-sm mt-1 block w-full"
-                                           value="{{ old('max_runs', 0) }}" />
+                                           value="{{ old('max_runs', 0) }}" required/>
                                     @error('max_runs')
                                         <p class="text-sm text-red-600">{{ $message }}</p>
                                     @enderror
