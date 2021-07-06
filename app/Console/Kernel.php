@@ -7,10 +7,11 @@ use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use App\Models\WebCronTask;
 use App\Models\WebCronResult;
 use Illuminate\Support\Facades\Http;
-use Log, DB;
+use Illuminate\Support\Facades\Log;
 
 class Kernel extends ConsoleKernel
 {
+
     /**
      * The Artisan commands provided by your application.
      *
@@ -28,21 +29,59 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $tasks = WebCronTask::get();
+
+        $current_day = Date('Y-m-d');
+
+        $tasks = WebCronTask::where('enabled', TRUE)
+                            ->where('start_date', '<=', $current_day)
+                            ->where('end_date', '>=', $current_day)
+                            ->where(function($query) {
+                                $query->whereRaw('max_runs > (SELECT count(id) FROM web_cron_results where web_cron_task_id= web_cron_tasks.id) ')
+                                ->orWhere('max_runs', '=', 0); //unlimited runs
+                            })
+                            ->get();
+
         foreach($tasks as $task) {
+
             $schedule->call(function() use ($task) {
+                $logMessage = "Executed task name: '" .$task->name ."' (ID: " .$task->id .")";
+                echo $logMessage.PHP_EOL;
+
                 $start = time();
-                $response = Http::timeout($task->timeout)->retry($task->attempts, $task->retry_waits)->get($task->url);
                 $result = new WebCronResult();
-                $result->code = $response->status();
-                $result->body = utf8_encode($response->body());
+
+                try {
+
+                    $response = Http::timeout($task->timeout)->retry($task->attempts, $task->retry_waits)->get($task->url);
+
+                    $result->body = utf8_encode($response->body());
+                    $result->code = $response->status();
+
+                } catch (\Exception $e)
+                {
+
+                    $result->body = utf8_encode('Caught exception: ' .$e->getMessage());
+                    $result->code = 500;
+
+                    Log::alert($logMessage);
+                    Log::alert($e->getMessage());
+
+                }
+
                 $result->web_cron_task_id = $task->id;
                 $result->duration = time() - $start;
                 $result->save();
-                       
-            })->cron($task->schedule);
+
+                // set status for current task
+                $task->refreshTaskStatus();
+
+                // send email with current task result
+                $result->emailTaskResults($task->log_type);
+
+           })->cron($task->schedule);
+
         }
-        
+
     }
 
     /**
@@ -57,3 +96,4 @@ class Kernel extends ConsoleKernel
         require base_path('routes/console.php');
     }
 }
+

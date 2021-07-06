@@ -1,0 +1,1 @@
+{{$webcronresult->body}}
